@@ -4,3 +4,15 @@ output: html_document
 date: "2023-09-27"
 ---
 
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+pols_df = 
+  read_csv("fivethirtyeight_datasets/pols-month.csv") |>
+  janitor::clean_names()
+  
+```
+
