@@ -18,8 +18,17 @@ pols_df =
   mutate(year = as.numeric(year), 
           mon = as.numeric(mon), 
           day = as.numeric(day)) |>
-  mutate(mon = month.abb[mon])
-  
+  mutate(mon = month.abb[mon]) |>
+  pivot_longer(
+      cols = c("prez_dem", "prez_gop"),
+      names_to = "prez",
+      values_to = "president") |>
+  select(-day)
+```
+
+```{r}
+snp_df =
+  read_csv("fivethirtyeight_datasets/snp.csv) 
 ```
 
 ```{r}
