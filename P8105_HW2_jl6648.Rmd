@@ -6,13 +6,28 @@ date: "2023-09-27"
 
 ```{r}
 library(tidyverse)
+library(dplyr)
 ```
 
 
 ```{r}
 pols_df = 
   read_csv("fivethirtyeight_datasets/pols-month.csv") |>
-  janitor::clean_names()
+  janitor::clean_names() |>
+  separate(mon, into = c("year", "mon", "day"), sep = "-") |>
+  mutate(year = as.numeric(year), 
+          mon = as.numeric(mon), 
+          day = as.numeric(day)) |>
+  mutate(mon = month.abb[mon])
   
+```
+
+```{r}
+Wheel_df =
+  readxl::read_excel("202207 Trash Wheel Collection Data.xlsx",
+  sheet = "Mr. Trash Wheel",
+  range = "A2:N549") |>
+  janitor::clean_names() |>
+  drop_na("dumpster")
 ```
 
