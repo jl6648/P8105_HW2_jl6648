@@ -49,7 +49,7 @@ unemploy_df =
 
 ```{r}
 joindata_df =
-  left_join(pols_df, snp_df, by = "Year" )
+  left_join(pols_df, snp_df, by = "year")
 ```
 
 ```{r}
@@ -58,5 +58,27 @@ Wheel_df =
   sheet = "Mr. Trash Wheel",
   range = "A2:N549") |>
   janitor::clean_names() |>
-  drop_na("dumpster")
+  drop_na("dumpster") |>
+  mutate(homes_powered = weight_tons*500/30) 
 ```
+
+```{r}
+professor_df =
+  readxl::read_excel("202207 Trash Wheel Collection Data.xlsx",
+  sheet = "Professor Trash Wheel",
+  range = "A2:M96") |>
+  janitor::clean_names() |>
+  drop_na("dumpster") |>
+  mutate(homes_powered = weight_tons*500/30)
+```
+
+```{r}
+Gwynnda_df =
+  readxl::read_excel("202207 Trash Wheel Collection Data.xlsx",
+  sheet = "Gwynnda Trash Wheel",
+  range = "A2:K108") |>
+  janitor::clean_names() |>
+  drop_na("dumpster") |>
+  mutate(homes_powered = weight_tons*500/30)
+```
+
