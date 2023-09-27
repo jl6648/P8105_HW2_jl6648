@@ -82,3 +82,8 @@ Gwynnda_df =
   mutate(homes_powered = weight_tons*500/30)
 ```
 
+```{r}
+baseline_df =
+  read_csv("data_mci/MCI_baseline.csv")
+```
+
