@@ -28,7 +28,10 @@ pols_df =
 
 ```{r}
 snp_df =
-  read_csv("fivethirtyeight_datasets/snp.csv) 
+  read_csv("fivethirtyeight_datasets/snp.csv") |>
+  janitor::clean_names() |>
+  separate(date, into = c("day", "mon", "year"), sep = "/") |>
+  relocate(year, mon)
 ```
 
 ```{r}
