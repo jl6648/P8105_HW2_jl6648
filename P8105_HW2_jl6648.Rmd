@@ -31,7 +31,25 @@ snp_df =
   read_csv("fivethirtyeight_datasets/snp.csv") |>
   janitor::clean_names() |>
   separate(date, into = c("day", "mon", "year"), sep = "/") |>
+  mutate(year = as.numeric(year), 
+          mon = as.numeric(mon), 
+          day = as.numeric(day)) |>
+  mutate(mon = month.abb[mon]) |>
   relocate(year, mon)
+```
+
+```{r}
+unemploy_df =
+  read_csv("fivethirtyeight_datasets/unemployment.csv") |>
+  pivot_longer(
+      Jan:Dec,
+      names_to = "mon",
+      values_to = "unemployment")
+```
+
+```{r}
+joindata_df =
+  left_join(pols_df, snp_df, by = "Year" )
 ```
 
 ```{r}
@@ -42,4 +60,3 @@ Wheel_df =
   janitor::clean_names() |>
   drop_na("dumpster")
 ```
-
