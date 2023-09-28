@@ -118,3 +118,15 @@ filter(baseline_df, sex == "Female")
 ```
 63/221 = 0.285 = 28.5%
 
+```{r}
+amyloid_df =
+  read_csv("data_mci/mci_amyloid.csv") |>
+  janitor::clean_names() |>
+  rename(id = study_id)
+```
+
+the study id in the "mci_amyloid.csv" dataset is inconsistent. id is the cue to find the participate appeared in both dataset. 
+```{r}
+participant_combine =
+  left_join(baseline_df, amyloid_df, by = "id")
+```
