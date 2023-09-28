@@ -63,6 +63,7 @@ Wheel_df =
   janitor::clean_names() |>
   drop_na("dumpster") |>
   mutate(homes_powered = weight_tons*500/30,
+         year = as.integer(year), 
          dataset = "Mr. Trash") 
 ```
 
@@ -89,7 +90,8 @@ Gwynnda_df =
 ```
 
 ```{r}
-bind_rows(Wheel_df, professor_df, Gwynnda_df)
+TrashWhell_combine =
+  bind_rows(Wheel_df, professor_df, Gwynnda_df)
 ```
 
 ```{r}
