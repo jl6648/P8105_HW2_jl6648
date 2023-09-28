@@ -9,51 +9,66 @@ library(tidyverse)
 library(dplyr)
 ```
 
-
+## problem 1
 ```{r}
 pols_df = 
-  read_csv("fivethirtyeight_datasets/pols-month.csv") |>
-  janitor::clean_names() |>
-  separate(mon, into = c("year", "mon", "day"), sep = "-") |>
-  mutate(year = as.numeric(year), 
+  read_csv("fivethirtyeight_datasets/pols-month.csv") |> #read dataset and clean names 
+  janitor::clean_names() |> 
+  separate(mon, into = c("year", "mon", "day"), sep = "-") |>  #separate the month variable
+  mutate(year = as.numeric(year),  
           mon = as.numeric(mon), 
-          day = as.numeric(day)) |>
-  mutate(mon = month.abb[mon],
-         president = case_when(prez_gop == "1" ~ "gop", prez_dem == "1" ~ "dem")) |>
-  select(-c(prez_gop, prez_dem, day))
+          day = as.numeric(day)) |> # change new variables to numeric 
+  mutate(mon = month.abb[mon], #replace month number with name, create a new variable president
+         president = case_when(prez_gop == "1" ~ "gop", prez_dem == "1" ~ "dem")) |> 
+  select(-c(prez_gop, prez_dem, day)) # drop variable 
 ```
+
+Description of pols_df:
+The dataset contains 822 observations, 9 variables including year, mon, gov_gop, sen_gop, rep_gop, gov_dem, sen_dem, rep_dem, and president. Variable mon is divided into three new variable (year, mon day). The range of year is from 1947 to 2015. president is a new variable combined with prez_gop and prez_dem. three variable (prez_gop, prez_dem, day) is dropped from original dataset. 
 
 ```{r}
 snp_df =
-  read_csv("fivethirtyeight_datasets/snp.csv") |>
+  read_csv("fivethirtyeight_datasets/snp.csv") |> #read the dataset and clean variable names.
   janitor::clean_names() |>
-  separate(date, into = c("day", "mon", "year"), sep = "/") |>
+  separate(date, into = c("day", "mon", "year"), sep = "/") |> #separate the month variable
   mutate(year = as.numeric(year), 
-          mon = as.numeric(mon), 
+          mon = as.numeric(mon),    # change new variables to numeric 
           day = as.numeric(day)) |>
-  mutate(mon = month.abb[mon]) |>
-  select(year, mon, everything(), -c(day)) |>
-  relocate(year, mon)
+  mutate(mon = month.abb[mon]) |>  #replace month number with name
+  select(year, mon, everything(), -c(day)) |> # select columns 
+  relocate(year, mon)  #organize year and month as the leading columns
 ```
+
+Description of snp_df,
+the dataset contains 787 observations, three variables including year, mon, close. Use the same method to separate mon variable into year, mon, day from original dataset. Then, drop the day variable. The range of year is from 1950 to 2015. 
 
 ```{r}
 unemploy_df =
-  read_csv("fivethirtyeight_datasets/unemployment.csv") |>
-  pivot_longer(
-      Jan:Dec,
+  read_csv("fivethirtyeight_datasets/unemployment.csv") |> #read the dataset and clean variable names.
+  pivot_longer( 
+      Jan:Dec,                           #switch “wide” to “long” format
       names_to = "mon",
       values_to = "unemployment") |>
-  rename(year = Year) |>
-  relocate(year, mon)
+  rename(year = Year) |>    #change the name, keep consistent with other dataset
+  relocate(year, mon)       #organize year and month as the leading columns
 ```
+
+Description of unemploy_df,
+The dataset contains 816 observations, three variables including year, mon, unemployment. Pivot_long function is used to reshape the data, then create a new variable unemployment. Rename the variable Year to year, keep it consistent with other dataset. The range of year is from 1948 to 2015.  
 
 ```{r}
 joindata_df =
-  left_join(pols_df, snp_df, by = c("year", "mon"))
+  left_join(pols_df, snp_df, by = c("year", "mon")) #join the  two datasets by same column "year"&"mon"
 
-joindata_df2 =
+joindata_df2 =                #merging unemploy_df into the result.
   left_join(joindata_df, unemploy_df,  by = c("year", "mon"))
 ```
+
+Description of joindata_df and joindata_df2:
+joindata_df joined by pols_df and snp_df with same column year and mon. It contains 822 observations and 10 variables. The range of year is from 1947 to 2015. 
+joindata_df joined by joindata_df and unemploy_df with the same column year and mon. It contains 822 observations and 11 variables. The range of year is from 1947 to 2015.
+
+## problem 2 
 
 ```{r}
 Wheel_df =
