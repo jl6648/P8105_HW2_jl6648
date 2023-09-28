@@ -96,6 +96,25 @@ TrashWhell_combine =
 
 ```{r}
 baseline_df =
-  read_csv("data_mci/MCI_baseline.csv")
+  read_csv("data_mci/MCI_baseline.csv") |>
+  janitor::clean_names() |>
+  mutate(
+    sex = replace(sex, sex == 0, "Female"),
+    sex = replace(sex, sex == 1, "Male"),
+    apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
+    apoe4 = replace(apoe4, apoe4 == 0, "No")
+  )
+
+filter(baseline_df, age_at_onset > 0)
+
+total_age =
+  pull(baseline_df, current_age) 
+  mean(total_age)
 ```
+
+```{r}
+filter(baseline_df, sex == "Female" & apoe4 == "Yes")
+filter(baseline_df, sex == "Female")
+```
+63/221 = 0.285 = 28.5%
 
