@@ -12,15 +12,15 @@ library(dplyr)
 ## problem 1
 ```{r}
 pols_df = 
-  read_csv("fivethirtyeight_datasets/pols-month.csv") |> #read dataset and clean names 
+  read_csv("fivethirtyeight_datasets/pols-month.csv") |>                #read dataset and clean names 
   janitor::clean_names() |> 
-  separate(mon, into = c("year", "mon", "day"), sep = "-") |>  #separate the month variable
+  separate(mon, into = c("year", "mon", "day"), sep = "-") |>            #separate the month variable
   mutate(year = as.numeric(year),  
           mon = as.numeric(mon), 
-          day = as.numeric(day)) |> # change new variables to numeric 
-  mutate(mon = month.abb[mon], #replace month number with name, create a new variable president
+          day = as.numeric(day)) |>                                  # change new variables to numeric 
+  mutate(mon = month.abb[mon],        #replace month number with name, create a new variable president
          president = case_when(prez_gop == "1" ~ "gop", prez_dem == "1" ~ "dem")) |> 
-  select(-c(prez_gop, prez_dem, day)) # drop variable 
+  select(-c(prez_gop, prez_dem, day))                                                  # drop variable 
 ```
 
 Description of pols_df:
@@ -28,15 +28,15 @@ The dataset contains 822 observations, 9 variables including year, mon, gov_gop,
 
 ```{r}
 snp_df =
-  read_csv("fivethirtyeight_datasets/snp.csv") |> #read the dataset and clean variable names.
+  read_csv("fivethirtyeight_datasets/snp.csv") |>           #read the dataset and clean variable names.
   janitor::clean_names() |>
-  separate(date, into = c("day", "mon", "year"), sep = "/") |> #separate the month variable
+  separate(date, into = c("day", "mon", "year"), sep = "/") |>            #separate the month variable
   mutate(year = as.numeric(year), 
-          mon = as.numeric(mon),    # change new variables to numeric 
+          mon = as.numeric(mon),                                     # change new variables to numeric 
           day = as.numeric(day)) |>
-  mutate(mon = month.abb[mon]) |>  #replace month number with name
-  select(year, mon, everything(), -c(day)) |> # select columns 
-  relocate(year, mon)  #organize year and month as the leading columns
+  mutate(mon = month.abb[mon]) |>                                      #replace month number with name
+  select(year, mon, everything(), -c(day)) |>                                         # select columns 
+  relocate(year, mon)                                  #organize year and month as the leading columns
 ```
 
 Description of snp_df,
@@ -46,11 +46,11 @@ the dataset contains 787 observations, three variables including year, mon, clos
 unemploy_df =
   read_csv("fivethirtyeight_datasets/unemployment.csv") |> #read the dataset and clean variable names.
   pivot_longer( 
-      Jan:Dec,                           #switch “wide” to “long” format
+      Jan:Dec,                                             #switch “wide” to “long” format
       names_to = "mon",
       values_to = "unemployment") |>
-  rename(year = Year) |>    #change the name, keep consistent with other dataset
-  relocate(year, mon)       #organize year and month as the leading columns
+  rename(year = Year) |>                          #change the name, keep consistent with other dataset
+  relocate(year, mon)                             #organize year and month as the leading columns
 ```
 
 Description of unemploy_df,
@@ -60,7 +60,7 @@ The dataset contains 816 observations, three variables including year, mon, unem
 joindata_df =
   left_join(pols_df, snp_df, by = c("year", "mon")) #join the  two datasets by same column "year"&"mon"
 
-joindata_df2 =                #merging unemploy_df into the result.
+joindata_df2 =                                                     #merging unemploy_df into the result
   left_join(joindata_df, unemploy_df,  by = c("year", "mon"))
 ```
 
@@ -72,42 +72,54 @@ joindata_df joined by joindata_df and unemploy_df with the same column year and 
 
 ```{r}
 Wheel_df =
-  readxl::read_excel("202207 Trash Wheel Collection Data.xlsx",
-  sheet = "Mr. Trash Wheel",
+  readxl::read_excel("202207 Trash Wheel Collection Data.xlsx", 
+  sheet = "Mr. Trash Wheel",                                 #read dataset with correct sheet and range
   range = "A2:N549") |>
-  janitor::clean_names() |>
-  drop_na("dumpster") |>
-  mutate(homes_powered = weight_tons*500/30,
+  janitor::clean_names() |>                                                               #clean names 
+  drop_na("dumpster") |>  #omit na. 
+  mutate(homes_powered = weight_tons*500/30,                    #calculate the homes_powered variable 
          year = as.integer(year), 
-         dataset = "Mr. Trash") 
+         dataset = "Mr. Trash")                                                  #specify the dataset 
 ```
+
+Description of Wheel_df:
+The data contains 547 observations and 15 variables. 
 
 ```{r}
 professor_df =
   readxl::read_excel("202207 Trash Wheel Collection Data.xlsx",
   sheet = "Professor Trash Wheel",
-  range = "A2:M96") |>
-  janitor::clean_names() |>
+  range = "A2:M96") |>                                       #read dataset with correct sheet and range
+  janitor::clean_names() |>                                                               #clean names 
   drop_na("dumpster") |>
-  mutate(homes_powered = weight_tons*500/30,
-         dataset = "Professor Trash" )
+  mutate(homes_powered = weight_tons*500/30,                      #calculate the homes_powered variable
+         dataset = "Professor Trash" )                                             #specify the dataset
 ```
+
+Description of professor_df:
+The data contains 94 observations and 14 variables. Total weight of trash is 190.12 tons. 
 
 ```{r}
 Gwynnda_df =
   readxl::read_excel("202207 Trash Wheel Collection Data.xlsx",
   sheet = "Gwynnda Trash Wheel",
-  range = "A2:K108") |>
-  janitor::clean_names() |>
+  range = "A2:K108") |>                                      #read dataset with correct sheet and range
+  janitor::clean_names() |>                                                               #clean names 
   drop_na("dumpster") |>
-  mutate(homes_powered = weight_tons*500/30,
-         dataset = "Gwynnda Trash")
+  mutate(homes_powered = weight_tons*500/30,                      #calculate the homes_powered variable
+         dataset = "Gwynnda Trash")                                               #specify the dataset
 ```
+
+Description of professor_df:
+The data contains 106 observations and 12 variables. Total cigarette butts is 231,910. 
 
 ```{r}
 TrashWhell_combine =
-  bind_rows(Wheel_df, professor_df, Gwynnda_df)
+  bind_rows(Wheel_df, professor_df, Gwynnda_df)                                 #combine these dataset 
 ```
+
+Description of TrashWhell_combine:
+The dataset combine three data above with 747 observations and 16 variables. 
 
 ```{r}
 baseline_df =
