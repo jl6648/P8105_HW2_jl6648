@@ -20,7 +20,7 @@ pols_df =
           day = as.numeric(day)) |>
   mutate(mon = month.abb[mon],
          president = case_when(prez_gop == "1" ~ "gop", prez_dem == "1" ~ "dem")) |>
-   select(-c(prez_gop, prez_dem, day))
+  select(-c(prez_gop, prez_dem, day))
 ```
 
 ```{r}
@@ -32,6 +32,7 @@ snp_df =
           mon = as.numeric(mon), 
           day = as.numeric(day)) |>
   mutate(mon = month.abb[mon]) |>
+  select(year, mon, everything(), -c(day)) |>
   relocate(year, mon)
 ```
 
@@ -41,12 +42,17 @@ unemploy_df =
   pivot_longer(
       Jan:Dec,
       names_to = "mon",
-      values_to = "unemployment")
+      values_to = "unemployment") |>
+  rename(year = Year) |>
+  relocate(year, mon)
 ```
 
 ```{r}
 joindata_df =
-  left_join(pols_df, snp_df, by = "year")
+  left_join(pols_df, snp_df, by = c("year", "mon"))
+
+joindata_df2 =
+  left_join(joindata_df, unemploy_df,  by = c("year", "mon"))
 ```
 
 ```{r}
