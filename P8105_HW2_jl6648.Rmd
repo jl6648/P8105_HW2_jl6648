@@ -62,7 +62,8 @@ Wheel_df =
   range = "A2:N549") |>
   janitor::clean_names() |>
   drop_na("dumpster") |>
-  mutate(homes_powered = weight_tons*500/30) 
+  mutate(homes_powered = weight_tons*500/30,
+         dataset = "Mr. Trash") 
 ```
 
 ```{r}
@@ -72,7 +73,8 @@ professor_df =
   range = "A2:M96") |>
   janitor::clean_names() |>
   drop_na("dumpster") |>
-  mutate(homes_powered = weight_tons*500/30)
+  mutate(homes_powered = weight_tons*500/30,
+         dataset = "Professor Trash" )
 ```
 
 ```{r}
@@ -82,7 +84,12 @@ Gwynnda_df =
   range = "A2:K108") |>
   janitor::clean_names() |>
   drop_na("dumpster") |>
-  mutate(homes_powered = weight_tons*500/30)
+  mutate(homes_powered = weight_tons*500/30,
+         dataset = "Gwynnda Trash")
+```
+
+```{r}
+bind_rows(Wheel_df, professor_df, Gwynnda_df)
 ```
 
 ```{r}
