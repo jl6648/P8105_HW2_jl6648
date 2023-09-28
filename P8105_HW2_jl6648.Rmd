@@ -18,12 +18,9 @@ pols_df =
   mutate(year = as.numeric(year), 
           mon = as.numeric(mon), 
           day = as.numeric(day)) |>
-  mutate(mon = month.abb[mon]) |>
-  pivot_longer(
-      cols = c("prez_dem", "prez_gop"),
-      names_to = "prez",
-      values_to = "president") |>
-  select(-day)
+  mutate(mon = month.abb[mon],
+         president = case_when(prez_gop == "1" ~ "gop", prez_dem == "1" ~ "dem")) |>
+   select(-c(prez_gop, prez_dem, day))
 ```
 
 ```{r}
