@@ -72,9 +72,9 @@ joindata_df joined by joindata_df and unemploy_df with the same column year and 
 
 ```{r, message=FALSE}
 Wheel_df =
-  readxl::read_excel("202207 Trash Wheel Collection Data.xlsx", 
+  readxl::read_excel("202309 Trash Wheel Collection Data.xlsx", 
   sheet = "Mr. Trash Wheel",                                 #read dataset with correct sheet and range
-  range = "A2:N549") |>
+  range = "A2:N586") |>
   janitor::clean_names() |>                                                               #clean names 
   drop_na("dumpster") |>  #omit na. 
   mutate(homes_powered = weight_tons*500/30,                    #calculate the homes_powered variable 
@@ -83,13 +83,13 @@ Wheel_df =
 ```
 
 Description of Wheel_df:
-The data contains 547 observations and 15 variables. 
+The data contains 584 observations and 15 variables. 
 
 ```{r, message=FALSE}
 professor_df =
-  readxl::read_excel("202207 Trash Wheel Collection Data.xlsx",
+  readxl::read_excel("202309 Trash Wheel Collection Data.xlsx",
   sheet = "Professor Trash Wheel",
-  range = "A2:M96") |>                                       #read dataset with correct sheet and range
+  range = "A2:M108") |>                                     #read dataset with correct sheet and range
   janitor::clean_names() |>                                                               #clean names 
   drop_na("dumpster") |>
   mutate(homes_powered = weight_tons*500/30,                      #calculate the homes_powered variable
@@ -97,13 +97,13 @@ professor_df =
 ```
 
 Description of professor_df:
-The data contains 94 observations and 14 variables. Total weight of trash is 190.12 tons. 
+The data contains 106 observations and 14 variables. Total weight of trash is 216.26 tons. 
 
 ```{r, message=FALSE}
 Gwynnda_df =
-  readxl::read_excel("202207 Trash Wheel Collection Data.xlsx",
+  readxl::read_excel("202309 Trash Wheel Collection Data.xlsx",
   sheet = "Gwynnda Trash Wheel",
-  range = "A2:K108") |>                                      #read dataset with correct sheet and range
+  range = "A2:L157") |>                                      #read dataset with correct sheet and range
   janitor::clean_names() |>                                                               #clean names 
   drop_na("dumpster") |>
   mutate(homes_powered = weight_tons*500/30,                      #calculate the homes_powered variable
@@ -111,7 +111,7 @@ Gwynnda_df =
 ```
 
 Description of Gwynnda_df:
-The data contains 106 observations and 12 variables. Total cigarette butts is (3400+3900+2900+2100+4000) = 16,300. 
+The data contains 155 observations and 13 variables. Total cigarette butts is (3400+3900+2900+2100+4000) = 16,300. 
 
 ```{r, message=FALSE}
 TrashWhell_combine =
@@ -119,7 +119,7 @@ TrashWhell_combine =
 ```
 
 Description of TrashWhell_combine:
-The dataset combine three data above with 747 observations and 16 variables. 
+The dataset combine three data above with 845 observations and 15 variables. 
 
 ## problem 3
 
