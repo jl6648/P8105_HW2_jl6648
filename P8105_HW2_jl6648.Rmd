@@ -188,10 +188,11 @@ amyloid_df =
 ```
 
 pivot_longer is used to make the data longer instead of wider. The "study id" in the "mci_amyloid.csv" dataset is inconsistent, so it is renamed to "id". It is the cue to find the participate appeared in both dataset. 
+
 ```{r, message=FALSE}
 participant_combine =
   inner_join(baseline_mci_df, amyloid_df, by = "id")                          #join two datasets by id 
 write.csv(participant_combine, "participant_combine.csv")                             #export the data
 ```
 
-Some participants appear in only the baseline or amyloid dataset based on the id variable, such as id 14 only appear in baseline dataset. After joining two dataset together, dataset contains `r nrow(participant_combine)` observations, specificlly `r nrow(participant_combine)/4` number of participants appears in both dataset. 
+Some participants appear in only the baseline or amyloid dataset based on the id variable, such as id 14 only appear in baseline dataset. After joining two dataset together, dataset contains `r nrow(participant_combine)` observations and `r names(participant_combine)` variables. Specificlly `r nrow(participant_combine)/4` number of participants appears in both dataset. 
