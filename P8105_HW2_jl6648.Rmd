@@ -83,7 +83,7 @@ Wheel_df =
 ```
 
 Description of Wheel_df:
-The data contains 584 observations and 15 variables. 
+The data contains `r nrow(Wheel_df)` observations and `r names(Wheel_df)` variables. The homes_powered is a new variable created by using weight_tons variable and based on the note of calculation formula. dataset is another new variable used to distinguish the origin of observations after merging these three datasets. 
 
 ```{r, message=FALSE}
 professor_df =
@@ -93,11 +93,11 @@ professor_df =
   janitor::clean_names() |>                                                               #clean names 
   drop_na("dumpster") |>
   mutate(homes_powered = weight_tons*500/30,                      #calculate the homes_powered variable
-         dataset = "Professor Trash" )                                             #specify the dataset
+         dataset = "Professor Trash" )                                            #specify the dataset
 ```
 
 Description of professor_df:
-The data contains 106 observations and 14 variables. Total weight of trash is 216.26 tons. 
+The data contains `r nrow(professor_df)` observations and `r names(professor_df)` variables. Total weight of trash is `r sum(professor_df$weight_tons)`. Same with the Wheel_df dataset, The homes_powered is a new variable created by using weight_tons variable and based on the note of calculation formula. dataset variable show that these observations come from Professor Trash dataset. 
 
 ```{r, message=FALSE}
 Gwynnda_df =
@@ -110,8 +110,14 @@ Gwynnda_df =
          dataset = "Gwynnda Trash")                                               #specify the dataset
 ```
 
+```{r}
+Gwynnda_cigarette =
+filter(Gwynnda_df, month == "July" & year == 2021) 
+  sum(Gwynnda_cigarette$cigarette_butts)
+```
+
 Description of Gwynnda_df:
-The data contains 155 observations and 13 variables. Total cigarette butts is (3400+3900+2900+2100+4000) = 16,300. 
+The data contains `r nrow(Gwynnda_df)` observations and `r names(Gwynnda_df)` variables. Total cigarette butts in July of 2021 is `r sum(Gwynnda_cigarette$cigarette_butts)`. Same with two datasets above, The homes_powered is a new variable created by using weight_tons variable and based on the note of calculation formula. dataset variable show that these observations come from Gwynnda Trash dataset. 
 
 ```{r, message=FALSE}
 TrashWhell_combine =
@@ -119,40 +125,48 @@ TrashWhell_combine =
 ```
 
 Description of TrashWhell_combine:
-The dataset combine three data above with 845 observations and 15 variables. 
+The dataset combine three data above with `r nrow(TrashWhell_combine)` observations and `r names(TrashWhell_combine)` variables. dataset variable specify the observations come from which dataset. 
 
 ## problem 3
 
+how many people develop MCI?
 ```{r, message=FALSE}
 baseline_mci_df =
   read_csv("data_mci/MCI_baseline.csv", na = ".") |>              #import the dataset, read . as NA
-  janitor::clean_names() |>
+  janitor::clean_names() |>                                                             #clean names 
   mutate(                                                             #mutate sex and apoe4 variable 
     sex = replace(sex, sex == 0, "Female"),
     sex = replace(sex, sex == 1, "Male"),
     apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
     apoe4 = replace(apoe4, apoe4 == 0, "No")
   ) |>         #remove participants who don't develop MCI or already developed MCI before study started
-  filter(!(current_age > age_at_onset | is.na(age_at_onset)))
+  filter(!(current_age >= age_at_onset | is.na(age_at_onset)))
 ```
 
-There are 483 participants are recruited, 94 of them develop MCI. 
-
+How many participants were recruited?
 ```{r, message=FALSE}
 baseline_df =
-  read_csv("data_mci/MCI_baseline.csv") |>                                     #same as previous chunk 
+  read_csv("data_mci/MCI_baseline.csv", na = ".") |>                         #same as previous chunk 
   janitor::clean_names() |>
   mutate(
     sex = replace(sex, sex == 0, "Female"),
     sex = replace(sex, sex == 1, "Male"),
     apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
     apoe4 = replace(apoe4, apoe4 == 0, "No")) 
+
+                                    #remove participants who already developed MCI before study started
+ filter(baseline_df, current_age < age_at_onset | is.na(age_at_onset))
+```
+
+There are 479 participants are recruited, 93 of them develop MCI. To calculate how many  participants are recruited, we need to remove participants who already developed MCI before study started, which means keep participants who develop MCI later or don't develop MCI at all. To calculate the how many people develop MCI, we need further remove people who don't develop MCI at all. 
+
+```{r}
 total_age =
   pull(baseline_df, current_age)                                   #calculate the mean of baseline age
   mean(total_age)
 ```
 
-The average baseline age is 65.04679
+The average baseline age is 65.04679. 
 
 ```{r, message=FALSE}
 filter(baseline_df, sex == "Female" & apoe4 == "Yes")             #select females who are apoe4 carrier
@@ -173,12 +187,11 @@ amyloid_df =
   )
 ```
 
-the study id in the "mci_amyloid.csv" dataset is inconsistent. id is the cue to find the participate appeared in both dataset. 
-
+pivot_longer is used to make the data longer instead of wider. The "study id" in the "mci_amyloid.csv" dataset is inconsistent, so it is renamed to "id". It is the cue to find the participate appeared in both dataset. 
 ```{r, message=FALSE}
 participant_combine =
   inner_join(baseline_mci_df, amyloid_df, by = "id")                          #join two datasets by id 
 write.csv(participant_combine, "participant_combine.csv")                             #export the data
 ```
 
-Some participants appear in only the baseline or amyloid dataset based on the id variable, such as id 14 only appear in baseline dataset. 
+Some participants appear in only the baseline or amyloid dataset based on the id variable, such as id 14 only appear in baseline dataset. After joining two dataset together, dataset contains `r nrow(participant_combine)` observations, specificlly `r nrow(participant_combine)/4` number of participants appears in both dataset. 
