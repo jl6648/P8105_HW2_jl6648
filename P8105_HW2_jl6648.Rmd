@@ -162,18 +162,18 @@ There are 479 participants are recruited, 93 of them develop MCI. To calculate h
 
 ```{r}
 total_age =
-  pull(baseline_df, current_age)                                   #calculate the mean of baseline age
+  pull(baseline_df_recruit, current_age)                            #calculate the mean of baseline age
   mean(total_age)
 ```
 
-The average baseline age is 65.04679 by average all participants' baseline age. 
+The average baseline age is 65.0286 by average all participants' baseline age. 
 
 ```{r, message=FALSE}
-filter(baseline_df, sex == "Female" & apoe4 == "Yes")             #select females who are apoe4 carrier
-filter(baseline_df, sex == "Female")                                                     #select female
+filter(baseline_df_recruit, sex == "Female" & apoe4 == "Yes")    #select females who are apoe4 carrier
+filter(baseline_df_recruit, sex == "Female")                                           #select female
 ```
 
-There are 211 females and 63 of them are apoe4 carriers. 63/211 = 0.298 = 29.8% Therefore, 29.8% female are  apoe4 carriers
+There are 211 females and 63 of them are apoe4 carriers. 63/210 = 0.3 = 30% Therefore, 30% female are  apoe4 carriers
 
 ```{r, message=FALSE}
 amyloid_df =
