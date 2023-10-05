@@ -129,6 +129,17 @@ The dataset combine three data above with `r nrow(TrashWhell_combine)` observati
 
 ## problem 3
 
+```{r}
+baseline_df =
+  read_csv("data_mci/MCI_baseline.csv", na = ".") |>                             #same as chunk above
+  janitor::clean_names() |>
+  mutate(
+    sex = replace(sex, sex == 0, "Female"),
+    sex = replace(sex, sex == 1, "Male"),
+    apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
+    apoe4 = replace(apoe4, apoe4 == 0, "No"))
+```
+
 how many people develop MCI?
 ```{r, message=FALSE}
 baseline_mci_df =
@@ -145,17 +156,16 @@ baseline_mci_df =
 
 How many participants were recruited?
 ```{r, message=FALSE}
-baseline_df =
+baseline_df_recruit =
   read_csv("data_mci/MCI_baseline.csv", na = ".") |>                         #same as previous chunk 
   janitor::clean_names() |>
   mutate(
     sex = replace(sex, sex == 0, "Female"),
     sex = replace(sex, sex == 1, "Male"),
     apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
-    apoe4 = replace(apoe4, apoe4 == 0, "No")) 
-
+    apoe4 = replace(apoe4, apoe4 == 0, "No")) |>
+    filter(current_age < age_at_onset | is.na(age_at_onset))
                                     #remove participants who already developed MCI before study started
- filter(baseline_df, current_age < age_at_onset | is.na(age_at_onset))
 ```
 
 To import dataset, read_csv function. is used to read the data and janitor::clean_names is used to further clean names of a data frame. mutate is used to represent sex and APOE4 carrier status in a appropriate way. baseline_df is a dataset that is created after basic cleaning and mutation. It contains `r nrow(baseline_df)` observations and `r names(baseline_df)` variabls.
@@ -181,9 +191,14 @@ There are 211 females and 63 of them are apoe4 carriers. 63/211 = 0.298 = 29.8% 
 amyloid_df =
   read_csv("data_mci/mci_amyloid.csv") |>                                             #import dataset 
   janitor::clean_names() |>
-  rename(id = study_id) |>                                     #rename to make the variable consistent
+  rename(id = study_id,
+         year_0 = baseline,
+         year_2 = time_2,
+         year_4 = time_4,
+         year_6 = time_6,
+         year_8 = time_8) |>                                     #rename to make the variable consistent
   pivot_longer(
-    time_2:time_8,                                                            #make the dataset longer 
+    year_0:year_8,                                                            #make the dataset longer 
     names_to = "time",
     values_to = "value"
   )
@@ -191,10 +206,16 @@ amyloid_df =
 
 To import dataset, read_csv function. is used to read the data and janitor::clean_names is used to further clean names of a data frame. The dataset contains `r nrow(amyloid_df)` observations and `r names(amyloid_df)` variabls. Pivot_longer is used to make the data longer instead of wider. The "study id" in the "mci_amyloid.csv" dataset is inconsistent, so it is renamed to "id". It is the cue to find the participate appeared in both dataset. 
 
+```{r}
+amyloid_only =
+  anti_join(amyloid_df, baseline_mci_df, by = "id")
+```
+
+
 ```{r, message=FALSE}
 participant_combine =
-  inner_join(baseline_mci_df, amyloid_df, by = "id")                          #join two datasets by id 
+  inner_join(baseline_df_recruit, amyloid_df, by = "id")                      #join two datasets by id 
 write.csv(participant_combine, "participant_combine.csv")                             #export the data
 ```
 
-Some participants appear in only the baseline or amyloid dataset based on the id variable, such as id 14 only appear in baseline dataset. After joining two dataset together, dataset contains `r nrow(participant_combine)` observations and `r names(participant_combine)` variables. Specificlly `r nrow(participant_combine)/4` number of participants appears in both dataset. 
+Some participants appear in only the baseline or amyloid dataset based on the id variable, such as id 14 only appear in baseline dataset. After joining two dataset together, dataset contains `r nrow(participant_combine)` observations and `r names(participant_combine)` variables. Specificlly `r nrow(participant_combine)/5` number of participants appears in both dataset. 
